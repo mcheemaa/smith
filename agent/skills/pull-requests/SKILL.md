@@ -14,7 +14,7 @@ git fetch origin
 git worktree add .worktrees/<branch> -b <branch> origin/<default branch>
 ```
 
-Name the branch `smith/<what-it-does>`, or the Linear issue's branch name when the task came from Linear.
+Name the branch after the Linear issue (`<team>-<number>-<slug>`, the issue's own copy-branch-name value) so Linear attaches the pull request to it. Every task has an issue; create one first if it does not.
 
 ## Commits
 
@@ -32,7 +32,7 @@ gh pr create --title "<the change>" --body "$(cat <<'EOF'
 
 <How you verified it: the commands you ran and what they showed.>
 
-Closes <issue link, when there is one>.
+Closes <issue id>.
 EOF
 )"
 ```

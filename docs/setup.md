@@ -33,6 +33,8 @@ A running log of the exact steps, written while doing them. Screenshots to be ad
 1. In the left sidebar, click **Install App**, then **Install to Workspace**, then **Allow**.
 2. Copy the **Bot User OAuth Token** that starts with `xoxb-`. It is `SLACK_BOT_TOKEN` in `.env.local`. [screenshot: install]
 
+If you change the scopes in the manifest later, Slack asks you to reinstall the app; it is one click on the app's Install App page.
+
 ## 5. Check what the manifest set
 
 - **Socket Mode** page: Enable Socket Mode is on.

@@ -1,8 +1,10 @@
 import { join } from "node:path";
-import { App, Assistant, LogLevel } from "@slack/bolt";
+import { App, Assistant, type BlockAction, type ButtonAction, LogLevel } from "@slack/bolt";
+import type { Block, KnownBlock } from "@slack/web-api";
 import type { Config } from "../config.ts";
 import { describeError, log } from "../log.ts";
 import type { Job, SlackTarget } from "../types.ts";
+import { type Press, pressPrompt, withChoice } from "./buttons.ts";
 import { saveAttachments, threadHistory, withContext } from "./context.ts";
 
 type Inbound = {
@@ -120,6 +122,34 @@ export function createSlackApp(deps: Deps): App {
 				originTs: message.ts,
 				...(context.teamId ? { teamId: context.teamId } : {}),
 				userId: message.user,
+			},
+		});
+	});
+
+	app.action<BlockAction<ButtonAction>>({ type: "block_actions" }, async ({ ack, body, action, client, context }) => {
+		await ack();
+		const message = body.message;
+		const channel = body.channel?.id;
+		if (!message || !channel || !permitted(body.user.id)) return;
+		const press: Press = {
+			user: body.user.id,
+			label: action.text.text,
+			value: action.value ?? "",
+			messageText: message.text ?? "",
+		};
+		const blocks = Array.isArray(message.blocks) ? (message.blocks as (Block | KnownBlock)[]) : [];
+		await client.chat.update({ channel, ts: message.ts, text: message.text ?? "", blocks: withChoice(blocks, press) });
+		await dispatch({
+			text: pressPrompt(press),
+			user: body.user.id,
+			inChannel: !channel.startsWith("D"),
+			target: {
+				surface: "slack",
+				channel,
+				threadTs: typeof message.thread_ts === "string" ? message.thread_ts : message.ts,
+				originTs: message.ts,
+				...(context.teamId ? { teamId: context.teamId } : {}),
+				userId: body.user.id,
 			},
 		});
 	});
