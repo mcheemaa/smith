@@ -47,6 +47,7 @@ export function paths(config: Config) {
 	const data = join(config.SMITH_HOME, "data");
 	return {
 		workspace: join(config.SMITH_HOME, "workspace"),
+		memory: join(config.SMITH_HOME, "memory"),
 		data,
 		runs: join(data, "runs"),
 		uploads: join(data, "uploads"),

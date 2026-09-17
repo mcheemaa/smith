@@ -82,7 +82,13 @@ Claude Code asks for a one-time approval of a project's `.mcp.json` in interacti
 - **Email**: a Resend API key in `RESEND_API_KEY` and the sender in `RESEND_FROM`. The `email` skill tells the agent how.
 - **Trigger.dev**: a personal access token in `TRIGGER_ACCESS_TOKEN`, from the Trigger.dev dashboard under account settings.
 
-Skills under `agent/skills` are copied to the workspace's `.claude/skills` the same way, and notes under `agent/notes` to the workspace's `notes`. Add a file and it arrives on the next start; files already on the box are never overwritten.
+- **Vercel**: an access token in `VERCEL_TOKEN`, from vercel.com/account/settings/tokens, scoped to the team that owns the projects. The `vercel` skill covers the CLI, which `deploy/install.sh` installs.
+
+Skills under `agent/skills` are copied to the workspace's `.claude/skills` the same way. Add a file and it arrives on the next start; files already on the box are never overwritten.
+
+### Memory
+
+Smith remembers with Claude Code's own memory: on every start Smith points it at `~/.smith/memory` (the `autoMemoryDirectory` setting) and approves the workspace's servers (`enableAllProjectMcpServers`), both in the smith user's `~/.claude/settings.json`. `MEMORY.md` there is the index Claude loads at the start of every session; every other file is one memory with frontmatter, written by Smith as it learns. Files under `agent/memory` are copied there once, which is how a private copy of this repository seeds company knowledge: a file per topic with a `name`, a `description`, and a `type`, and one line for it in `MEMORY.md`.
 
 ## 10. Deploy to a box
 

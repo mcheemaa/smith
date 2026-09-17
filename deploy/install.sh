@@ -25,7 +25,7 @@ id smith >/dev/null 2>&1 || useradd --create-home --shell /bin/bash smith
 
 sudo -u smith bash -c 'command -v ~/.bun/bin/bun >/dev/null || curl -fsSL https://bun.sh/install | bash'
 sudo -u smith bash -c 'command -v ~/.local/bin/claude >/dev/null || curl -fsSL https://claude.ai/install.sh | bash'
-sudo -u smith bash -c 'mkdir -p ~/.claude && f=~/.claude/settings.json && { [ -f "$f" ] || echo "{}" >"$f"; } && jq ".enableAllProjectMcpServers = true" "$f" >"$f.tmp" && mv "$f.tmp" "$f'
+npm i -g vercel >/dev/null 2>&1
 npx -y playwright@latest install-deps chromium >/dev/null 2>&1
 sudo -u smith bash -c 'npx -y playwright@latest install chromium >/dev/null 2>&1'
 sudo -u smith bash -c "[ -d ~/smith ] || git clone '$repo' ~/smith"
