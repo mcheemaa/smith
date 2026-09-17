@@ -1,6 +1,6 @@
-import type { LinearClient } from "@linear/sdk";
 import { describeError, log } from "../log.ts";
 import type { Reply, RunResult } from "../types.ts";
+import type { LinearAuth } from "./token.ts";
 
 const ACTION_INTERVAL_MS = 15_000;
 const QUIET_TOOLS = new Set(["Read", "Grep", "Glob", "TodoWrite", "WebFetch", "WebSearch"]);
@@ -19,7 +19,7 @@ export class LinearReply implements Reply {
 	private lastActionAt = 0;
 
 	constructor(
-		private readonly client: LinearClient,
+		private readonly auth: LinearAuth,
 		private readonly sessionId: string,
 	) {}
 
@@ -42,11 +42,11 @@ export class LinearReply implements Reply {
 		}
 		const urls = pullRequestUrls(result.text);
 		if (urls.length > 0) {
-			await this.client
-				.updateAgentSession(this.sessionId, {
+			await this.call((client) =>
+				client.updateAgentSession(this.sessionId, {
 					addedExternalUrls: urls.map((url) => ({ label: url.replace("https://github.com/", ""), url })),
-				})
-				.catch((error) => log.warn("linear.external_urls_failed", { error: describeError(error) }));
+				}),
+			).catch((error) => log.warn("linear.external_urls_failed", { error: describeError(error) }));
 		}
 		await this.activity({ type: endsWithQuestion(result.text) ? "elicitation" : "response", body: result.text });
 	}
@@ -57,9 +57,20 @@ export class LinearReply implements Reply {
 
 	private async activity(content: Record<string, unknown>, ephemeral = false): Promise<void> {
 		try {
-			await this.client.createAgentActivity({ agentSessionId: this.sessionId, content, ephemeral });
+			await this.call((client) => client.createAgentActivity({ agentSessionId: this.sessionId, content, ephemeral }));
 		} catch (error) {
 			log.error("linear.activity_failed", { sessionId: this.sessionId, error: describeError(error) });
+		}
+	}
+
+	// A rejected token is minted again once; anything else propagates.
+	private async call<T>(request: (client: Awaited<ReturnType<LinearAuth["client"]>>) => Promise<T>): Promise<T> {
+		try {
+			return await request(await this.auth.client());
+		} catch (error) {
+			if (!/401|unauthenticated|unauthorized/i.test(describeError(error))) throw error;
+			this.auth.invalidate();
+			return request(await this.auth.client());
 		}
 	}
 }

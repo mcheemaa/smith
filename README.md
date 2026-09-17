@@ -85,7 +85,8 @@ Open Smith under Apps in Slack and say hello. The checks are
 Any Linux box you can SSH into. `deploy/install.sh` prepares a fresh Ubuntu machine
 and installs a systemd unit; `just deploy user@host` syncs a checkout and restarts.
 Sign in to Claude and GitHub on the box as the `smith` user, or put a long-lived
-token from `claude setup-token` in `.env.local`.
+token from `claude setup-token` in `.env.local`. Linear tokens are minted by Smith itself
+from the application's client credentials.
 
 ## Working in the repo
 

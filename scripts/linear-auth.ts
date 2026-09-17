@@ -1,4 +1,4 @@
-// One-time authorization of the Linear agent app. Prints the access token for .env.local.
+// One-time installation of the app as an agent in a Linear workspace. Smith mints its own tokens afterwards.
 // Usage: LINEAR_CLIENT_ID=... LINEAR_CLIENT_SECRET=... bun run scripts/linear-auth.ts
 
 const clientId = process.env.LINEAR_CLIENT_ID;
@@ -47,11 +47,11 @@ const server = Bun.serve({
 			setTimeout(() => process.exit(1), 100);
 			return new Response(`Token exchange failed: ${body.error ?? "unknown"}`, { status: 500 });
 		}
-		console.log(`\nLINEAR_ACCESS_TOKEN=${body.access_token}\n`);
+		console.log("\nInstalled as an agent in the workspace.\n");
 		setTimeout(() => {
 			server.stop();
 			process.exit(0);
 		}, 100);
-		return new Response("Authorized. The token is in your terminal; you can close this tab.");
+		return new Response("Smith is installed as an agent in this workspace. You can close this tab.");
 	},
 });

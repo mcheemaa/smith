@@ -1,6 +1,7 @@
-import type { LinearClient } from "@linear/sdk";
 import { describeError, log } from "../log.ts";
 import type { Runner } from "../runner.ts";
+import { LinearReply } from "./reply.ts";
+import type { LinearAuth } from "./token.ts";
 import type { AgentSessionEvent } from "./webhook.ts";
 
 export function sessionPrompt(event: AgentSessionEvent): string {
@@ -29,7 +30,7 @@ function describe(event: AgentSessionEvent): string {
 	return `You are working ${subject}. The person reads your reply inside Linear as this session's response, so keep it factual and link the pull request when there is one.`;
 }
 
-type Deps = { client: LinearClient; runner: Runner; hasSession: (key: string) => boolean };
+type Deps = { auth: LinearAuth; runner: Runner; hasSession: (key: string) => boolean };
 
 // Linear redelivers webhooks it did not hear back from in time, so every delivery is remembered once.
 const seen = new Set<string>();
@@ -48,8 +49,14 @@ export function handleLinearEvent(event: AgentSessionEvent, deps: Deps): void {
 	}
 	if (event.action === "created") {
 		if (deps.hasSession(key)) return;
-		deps.client
-			.createAgentActivity({ agentSessionId: session.id, content: { type: "thought", body: "Looking at this now." } })
+		deps.auth
+			.client()
+			.then((client) =>
+				client.createAgentActivity({
+					agentSessionId: session.id,
+					content: { type: "thought", body: "Looking at this now." },
+				}),
+			)
 			.catch((error) => log.error("linear.ack_failed", { sessionId: session.id, error: describeError(error) }));
 	}
 	const prompt = sessionPrompt(event);

@@ -28,7 +28,8 @@ const schema = z.object({
 	SLACK_ALLOWED_USERS: list,
 	SLACK_HEARTBEAT_CHANNEL: z.string().optional(),
 	HEARTBEAT_CRON: z.string().default("0 */4 * * *"),
-	LINEAR_ACCESS_TOKEN: z.string().optional(),
+	LINEAR_CLIENT_ID: z.string().optional(),
+	LINEAR_CLIENT_SECRET: z.string().optional(),
 	LINEAR_WEBHOOK_SECRET: z.string().optional(),
 	PORT: z.coerce.number().int().positive().default(8787),
 });

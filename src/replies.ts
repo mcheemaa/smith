@@ -1,6 +1,6 @@
-import type { LinearClient } from "@linear/sdk";
 import type { WebClient } from "@slack/web-api";
 import { LinearReply } from "./linear/reply.ts";
+import type { LinearAuth } from "./linear/token.ts";
 import { log } from "./log.ts";
 import { SlackReply } from "./slack/reply.ts";
 import type { Reply, ReplyTarget, RunResult } from "./types.ts";
@@ -18,7 +18,7 @@ class LogReply implements Reply {
 }
 
 // Rebuilds the right Reply from plain target data, whether the job is fresh or recovered after a restart.
-export function replyFactory(deps: { slack: WebClient; linear?: LinearClient }) {
+export function replyFactory(deps: { slack: WebClient; linear?: LinearAuth }) {
 	return (target: ReplyTarget): Reply => {
 		switch (target.surface) {
 			case "slack":

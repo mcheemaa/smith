@@ -16,7 +16,7 @@ type Deps = {
 	queue: RunQueue;
 	workspace: string;
 	runsDir: string;
-	mcpServers: Record<string, McpServerConfig>;
+	mcpServers: () => Promise<Record<string, McpServerConfig>>;
 	replyFor: (target: ReplyTarget) => Reply;
 };
 
@@ -96,7 +96,7 @@ export class Runner {
 		}
 	}
 
-	private execute(
+	private async execute(
 		job: Job,
 		reply: Reply,
 		sessionId: string | undefined,
@@ -109,7 +109,7 @@ export class Runner {
 			cwd: this.deps.workspace,
 			...(sessionId ? { sessionId } : {}),
 			systemAppend: systemAppend(config.SMITH_NAME, job.context),
-			mcpServers: this.deps.mcpServers,
+			mcpServers: await this.deps.mcpServers(),
 			signal,
 			config,
 			reply,

@@ -55,7 +55,7 @@ In Slack, open your profile, click the three dots, **Copy member ID**. It is `SL
 Linear needs to reach the box over HTTPS, so do [deploy.md](deploy.md) first and have a URL like `https://smith.superorgs.sh`.
 
 1. In Linear, open **Settings**, **API**, **Applications**, **Create new**. Name it after the agent, upload `assets/smith.png` as the icon. [screenshot: application form]
-2. **Redirect URLs**: add `http://localhost:7890/callback`.
+2. **Redirect URLs**: add `http://localhost:7890/callback`. **GitHub username**: the agent's GitHub account, so its commits and pull requests are linked. Turn **Client credentials** on; Smith uses it to mint its own tokens.
 3. **Webhooks**: turn on, URL `https://<your host>/linear/webhook`, and enable **Agent session events**. Copy the **Signing secret**; it is `LINEAR_WEBHOOK_SECRET`. [screenshot: webhook section]
 4. Copy the **Client ID** and **Client secret**.
 5. On your laptop, authorize the app as an agent:
@@ -64,8 +64,8 @@ Linear needs to reach the box over HTTPS, so do [deploy.md](deploy.md) first and
    LINEAR_CLIENT_ID=... LINEAR_CLIENT_SECRET=... bun run linear-auth
    ```
 
-   Open the printed URL, approve, and the terminal prints `LINEAR_ACCESS_TOKEN=...`.
-6. Put `LINEAR_ACCESS_TOKEN` and `LINEAR_WEBHOOK_SECRET` in `.env.local`, copy it to the box with `just env`, and restart the service. The log prints `linear.listening`.
+   Open the printed URL and approve as a workspace admin. This installs the agent; no token to copy.
+6. Put `LINEAR_CLIENT_ID`, `LINEAR_CLIENT_SECRET`, and `LINEAR_WEBHOOK_SECRET` in `.env.local`, copy it to the box with `just env`, and restart the service. The log prints `linear.token` and `linear.listening`. Tokens expire after 30 days and Smith mints new ones itself.
 7. In Linear, assign an issue to the agent or mention it in a comment. The session appears on the issue within seconds.
 
 ## 9. Deploy to a box

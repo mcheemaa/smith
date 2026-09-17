@@ -1,11 +1,11 @@
 import { join } from "node:path";
-import { LinearClient } from "@linear/sdk";
 import { slackTools } from "./agent/tools.ts";
 import { type Config, loadConfig, paths } from "./config.ts";
 import { startHeartbeat } from "./heartbeat.ts";
 import { handleLinearEvent } from "./linear/session.ts";
+import { LinearAuth } from "./linear/token.ts";
 import { linearWebhook } from "./linear/webhook.ts";
-import { log } from "./log.ts";
+import { describeError, log } from "./log.ts";
 import { RunQueue } from "./queue.ts";
 import { replyFactory } from "./replies.ts";
 import { Runner } from "./runner.ts";
@@ -17,15 +17,20 @@ let config: Config;
 try {
 	config = loadConfig();
 } catch (error) {
-	console.error(error instanceof Error ? error.message : error);
+	console.error(describeError(error));
 	process.exit(1);
 }
 const workspace = await prepareWorkspace(config, join(import.meta.dir, "..", "agent"));
 const store = new Store(paths(config).db);
 const hasSession = (key: string) => store.session(key, config.SMITH_SESSION_IDLE_HOURS * 3_600_000) !== undefined;
 
-const linearToken = config.LINEAR_ACCESS_TOKEN;
-const linear = linearToken ? new LinearClient({ accessToken: linearToken }) : undefined;
+const linear =
+	config.LINEAR_CLIENT_ID && config.LINEAR_CLIENT_SECRET && config.LINEAR_WEBHOOK_SECRET
+		? {
+				auth: new LinearAuth(config.LINEAR_CLIENT_ID, config.LINEAR_CLIENT_SECRET),
+				secret: config.LINEAR_WEBHOOK_SECRET,
+			}
+		: undefined;
 
 const slack = createSlackApp({
 	config,
@@ -40,27 +45,32 @@ const runner = new Runner({
 	queue: new RunQueue(config.SMITH_MAX_CONCURRENT),
 	workspace,
 	runsDir: paths(config).runs,
-	mcpServers: {
+	mcpServers: async () => ({
 		slack: slackTools(slack.client),
-		...(linearToken
+		...(linear
 			? {
 					linear: {
-						type: "http",
+						type: "http" as const,
 						url: "https://mcp.linear.app/mcp",
-						headers: { Authorization: `Bearer ${linearToken}` },
+						headers: { Authorization: `Bearer ${await linear.auth.accessToken()}` },
 					},
 				}
 			: {}),
-	},
-	replyFor: replyFactory({ slack: slack.client, ...(linear ? { linear } : {}) }),
+	}),
+	replyFor: replyFactory({ slack: slack.client, ...(linear ? { linear: linear.auth } : {}) }),
 });
 
 await slack.start();
 log.info("slack.connected");
 
-if (linear && config.LINEAR_WEBHOOK_SECRET) {
-	const webhook = linearWebhook(config.LINEAR_WEBHOOK_SECRET, (event) =>
-		handleLinearEvent(event, { client: linear, runner, hasSession }),
+if (linear) {
+	try {
+		await linear.auth.accessToken();
+	} catch (error) {
+		log.error("linear.token_failed", { error: describeError(error) });
+	}
+	const webhook = linearWebhook(linear.secret, (event) =>
+		handleLinearEvent(event, { auth: linear.auth, runner, hasSession }),
 	);
 	Bun.serve({
 		port: config.PORT,
