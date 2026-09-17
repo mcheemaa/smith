@@ -6,7 +6,7 @@ A running log of the exact steps, written while doing them. Screenshots to be ad
 
 - A Linux or macOS machine that will run Smith. For the first run, your laptop is fine.
 - Bun, git, gh, and Claude Code installed on that machine.
-- `claude auth login` completed there with your Claude subscription (or `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token` in `.env`).
+- `claude auth login` completed there with your Claude subscription (or `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token` in `.env.local`).
 - `gh auth login` completed there.
 - A Slack workspace where you can create apps.
 
@@ -20,7 +20,7 @@ A running log of the exact steps, written while doing them. Screenshots to be ad
 
 1. On **Basic Information**, scroll to **App-Level Tokens** and click **Generate Token and Scopes**.
 2. Name it `socket`, add the scope `connections:write`, click **Generate**.
-3. Copy the token that starts with `xapp-`. It is `SLACK_APP_TOKEN` in `.env`. [screenshot: app-level token]
+3. Copy the token that starts with `xapp-`. It is `SLACK_APP_TOKEN` in `.env.local`. [screenshot: app-level token]
 
 ## 3. Icon and colors
 
@@ -31,7 +31,7 @@ A running log of the exact steps, written while doing them. Screenshots to be ad
 ## 4. Install the app to the workspace
 
 1. In the left sidebar, click **Install App**, then **Install to Workspace**, then **Allow**.
-2. Copy the **Bot User OAuth Token** that starts with `xoxb-`. It is `SLACK_BOT_TOKEN` in `.env`. [screenshot: install]
+2. Copy the **Bot User OAuth Token** that starts with `xoxb-`. It is `SLACK_BOT_TOKEN` in `.env.local`. [screenshot: install]
 
 ## 5. Check what the manifest set
 
@@ -41,7 +41,7 @@ A running log of the exact steps, written while doing them. Screenshots to be ad
 
 ## 6. Your Slack member ID
 
-In Slack, open your profile, click the three dots, **Copy member ID**. It is `SLACK_ALLOWED_USERS` in `.env`. Only the people listed there can talk to Smith; leave it empty to allow the whole workspace.
+In Slack, open your profile, click the three dots, **Copy member ID**. It is `SLACK_ALLOWED_USERS` in `.env.local`. Only the people listed there can talk to Smith; leave it empty to allow the whole workspace.
 
 ## 7. Configure and run
 
