@@ -3,7 +3,7 @@ remote := "/home/smith/smith"
 
 # Pull main on the box, install dependencies, restart the service.
 deploy target=host:
-    ssh {{target}} 'cd {{remote}} && sudo -u smith git pull --ff-only && sudo -u smith /home/smith/.bun/bin/bun install --frozen-lockfile && sudo systemctl restart smith'
+    ssh {{target}} "sudo -u smith bash -c 'cd {{remote}} && git pull --ff-only && ~/.bun/bin/bun install --frozen-lockfile' && sudo systemctl restart smith"
 
 # Copy the local .env.local to the box.
 env target=host:
