@@ -1,52 +1,101 @@
-# Smith
+<p align="center">
+  <img src="assets/smith.png" alt="Smith" width="160">
+</p>
 
-A self-hosted engineering agent with a machine of its own. You talk to it in Slack, hand it issues in Linear, and it ships pull requests on GitHub. It runs on the Claude Agent SDK and signs in the way Claude Code does, with your Claude subscription.
+<p align="center"><strong>Smith</strong>, an engineering agent with a machine of its own.</p>
 
-## How it works
+<p align="center">
+  <a href="docs/setup.md">set it up</a> ·
+  <a href="AGENTS.md">how the repo works</a> ·
+  <a href="agent/CLAUDE.md">the agent's manual</a>
+</p>
 
-One long-running process on a Linux box you can SSH into.
+<p align="center">
+  <a href="https://github.com/mcheemaa/smith/actions/workflows/ci.yml"><img src="https://github.com/mcheemaa/smith/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/TypeScript-strict-3178c6" alt="TypeScript strict">
+  <img src="https://img.shields.io/badge/license-MIT-4a75c4" alt="license: MIT">
+</p>
 
-- Slack, over Socket Mode. A direct message or an `@Smith` mention starts a Claude Code session; the reply streams into the thread as a task timeline plus the answer. A channel thread is one conversation, a DM is one long conversation. Follow-ups resume the same session.
-- Linear, over the Agents protocol. Assign or mention the agent and Linear sends a webhook; the run shows up as activities in the issue's agent session, with the pull request linked when there is one.
-- Heartbeat. A cron wakes the agent every few hours with `~/.smith/heartbeat.md`; it walks its open pull requests and its Linear queue and reports to a channel.
+You talk to Smith in Slack. You hand it issues in Linear. It works on a Linux box you
+can SSH into, with your repositories cloned, and it ships pull requests on GitHub. It runs on the Claude Agent SDK and signs in the way Claude Code does, with
+your own Claude subscription. There is no UI to run and nothing to host but one
+process.
 
-The agent works in `~/.smith/workspace`, where its repositories are cloned and where its manual, `CLAUDE.md`, lives. Sessions are Claude Code sessions on disk, so a restart loses nothing.
+Underneath is a Claude Code session per conversation, kept on disk. Reply in the
+thread a week later and it remembers. Every few hours a heartbeat wakes it to walk
+its open pull requests and its queue. What it knows about how to work is one
+markdown file it is allowed to edit.
 
-## Setup
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/smith-harness-dark.svg">
+    <img src="brand/smith-harness.svg" alt="The harness: a message in Slack, an issue in Linear, and the agent's own heartbeat each write into a session. Smith wakes on its own machine and answers with a streamed reply, a pull request, and activities on the issue." width="1080">
+  </picture>
+</p>
 
-On the box, as the user that will run Smith:
+## The shape
 
-1. Install [Bun](https://bun.sh), [Claude Code](https://code.claude.com/docs/en/setup), git, and [gh](https://cli.github.com).
-2. Sign in: `claude auth login` (or set `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token`) and `gh auth login`.
-3. Clone this repository, `bun install`, copy `.env.example` to `.env.local`, and fill it in.
-4. Slack: create an app from `deploy/slack-manifest.yaml` at [api.slack.com/apps](https://api.slack.com/apps), install it to your workspace, and copy the bot token and an app-level token with `connections:write` into `.env.local`.
-5. Linear (optional): create an OAuth application, authorize it with `actor=app` so it becomes an agent, and point its webhook at `https://<your-host>/linear/webhook` for agent session events. Put the access token and webhook secret in `.env.local`. The webhook needs a public URL; `deploy/Caddyfile.example` shows one way, a Cloudflare Tunnel is another.
-6. `bun start`.
+The session is the unit. A Slack thread is a session, a direct message is one long
+session, a Linear agent session is a session, and the heartbeat has one of its own.
+Three things write into them: people, Linear, and the agent's own clock. Runs on
+one session are serialized; a few sessions run at once. Sessions are Claude Code
+transcripts on the machine's disk, so a restart, a deploy, or a week of silence
+loses nothing, and a run cut off by a restart resumes on the next boot.
 
-`deploy/install.sh` does steps 1 and 3 on a fresh Ubuntu machine and installs a systemd unit. `just deploy user@host` syncs a checkout and restarts.
+Replies arrive where the request came from. In Slack the reply streams into the thread as a
+task timeline followed by the answer, with reactions on your message for received
+and done. In Linear it shows up as activities on the issue's agent session, with
+the pull request linked when there is one.
 
-## Layout
+## What it does
 
+| Slack | Linear |
+| --- | --- |
+| direct messages and `@Smith` mentions, over Socket Mode, no public URL needed | assign or mention the agent and Linear sends the session; it answers within seconds |
+| a mention inside an existing thread reads the thread first | follow-ups in the same session resume the same conversation |
+| attached files are saved into the workspace for the agent to open | the pull request it opens is attached to the session |
+| it is the bot user: any Web API method, and file uploads, as itself | the full Linear MCP, as the agent's own identity |
+| only the people you list can talk to it | `stop` in Linear aborts the run |
+
+## The harness underneath
+
+The TypeScript is plumbing, about a thousand lines: route a message to a session,
+stream the run back, remember which thread is which session, write every run down.
+The agent's behavior is `agent/CLAUDE.md` and `agent/heartbeat.md`, seeded onto the
+machine on first start and owned by the agent and you after that. There is no
+guardrail layer and no approval flow; the agent runs with permissions bypassed on a
+machine that is its own, and what it should and should not do is written in its
+manual in plain English.
+
+## Run it
+
+You need a machine with Bun, git, gh, and Claude Code, signed in to GitHub and to
+your Claude account, and a Slack app made from `deploy/slack-manifest.yaml`.
+[docs/setup.md](docs/setup.md) walks every step.
+
+```console
+bun install
+cp .env.example .env.local        # fill in
+bun start
 ```
-agent/CLAUDE.md      the agent's operating manual, seeded into the workspace on first start
-agent/heartbeat.md   the heartbeat prompt, seeded into ~/.smith
-src/main.ts          boots everything
-src/config.ts        environment, validated
-src/runner.ts        one run: session lookup, the agent, the transcript, the reply
-src/agent/run.ts     the Agent SDK call and the message stream
-src/slack/           Bolt app and the streaming reply
-src/linear/          webhook, session events, activities
-src/heartbeat.ts     the cron
-src/queue.ts         one run per conversation at a time, a few overall
-src/store.ts         SQLite: which conversation is which session, and every run
-deploy/              install script, systemd unit, Slack manifest, Caddy example
-```
 
-## Develop
+Open Smith under Apps in Slack and say hello. The gates are
+`bun run typecheck && bun run lint && bun test`.
 
-```
-bun run typecheck
-bun run lint
-bun test
-bun dev
-```
+## Deploying
+
+Any Linux box you can SSH into. `deploy/install.sh` prepares a fresh Ubuntu machine
+and installs a systemd unit; `just deploy user@host` syncs a checkout and restarts.
+Sign in to Claude and GitHub on the box as the `smith` user, or put a long-lived
+token from `claude setup-token` in `.env.local`.
+
+## Working in the repo
+
+[AGENTS.md](AGENTS.md) is the working constitution. [CONTRIBUTING.md](CONTRIBUTING.md)
+has the short version, and security reports go through [SECURITY.md](SECURITY.md).
+
+## License
+
+MIT. See [LICENSE](LICENSE). The avatar is composed from the
+[Notionists](https://heyzoish.gumroad.com/l/notionists) set by Zoish (CC0 1.0)
+through [DiceBear](https://www.dicebear.com).
