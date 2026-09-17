@@ -28,7 +28,7 @@ Run what the repository runs: its tests, linter, and typecheck. If something fai
 
 ```bash
 gh pr create --title "<the change>" --body "$(cat <<'EOF'
-<What changed and why, two to five sentences. Plain words.>
+<What changed and why, two to five sentences. Plain words. Short beats complete.>
 
 <How you verified it: the commands you ran and what they showed.>
 
@@ -47,7 +47,7 @@ GitHub has no way to upload an image into a pull request from the command line, 
 <img src="https://github.com/<org>/screenshots/blob/main/<repository>/<issue>/docs-1440-light.png?raw=true" width="49%" alt="/docs at 1440, light"> <img src="https://github.com/<org>/screenshots/blob/main/<repository>/<issue>/docs-1440-dark.png?raw=true" width="49%" alt="/docs at 1440, dark">
 ```
 
-The same files go into the Slack thread with `mcp__slack__slack_upload`.
+Screenshots are for people. A few that show each change, before and after where it helps, cropped to the part that matters; never every page at every size. The same files go into the Slack thread with `mcp__slack__slack_upload`.
 
 ## After opening
 
