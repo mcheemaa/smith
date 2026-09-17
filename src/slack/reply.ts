@@ -1,6 +1,7 @@
 import type { AnyChunk, WebClient } from "@slack/web-api";
 import { describeError, log } from "../log.ts";
 import type { Reply, RunResult, SlackTarget } from "../types.ts";
+import { Steps } from "./steps.ts";
 
 const FLUSH_MS = 3000;
 const MESSAGE_LIMIT = 11_000;
@@ -28,7 +29,7 @@ export class SlackReply implements Reply {
 	private streamingBroken = false;
 	private pendingText = "";
 	private readonly pendingTasks = new Map<string, AnyChunk>();
-	private readonly titles = new Map<string, string>();
+	private readonly steps = new Steps();
 	private timer: ReturnType<typeof setTimeout> | undefined;
 	private flushing: Promise<void> = Promise.resolve();
 
@@ -40,20 +41,22 @@ export class SlackReply implements Reply {
 	}
 
 	text(delta: string): void {
+		this.queue(this.steps.close());
 		this.pendingText += delta;
 		this.schedule();
 	}
 
 	tool(id: string, title: string): void {
-		this.titles.set(id, title);
-		this.pendingTasks.set(id, { type: "task_update", id, title, status: "in_progress" });
-		this.schedule();
+		this.queue(this.steps.start(id, title));
 	}
 
 	toolDone(id: string, ok: boolean): void {
-		const title = this.titles.get(id);
-		if (!title) return;
-		this.pendingTasks.set(id, { type: "task_update", id, title, status: ok ? "complete" : "error" });
+		this.queue(this.steps.finish(id, ok));
+	}
+
+	private queue(chunk: AnyChunk | undefined): void {
+		if (chunk?.type !== "task_update") return;
+		this.pendingTasks.set(chunk.id, chunk);
 		this.schedule();
 	}
 
@@ -68,6 +71,7 @@ export class SlackReply implements Reply {
 	}
 
 	private async finish(text: string): Promise<void> {
+		this.queue(this.steps.close());
 		await this.flushNow();
 		try {
 			if (this.streamer && !this.streamingBroken) await this.streamer.stop();
