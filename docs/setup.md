@@ -56,4 +56,4 @@ To be written when the Linear agent app is registered.
 
 ## 9. Deploy to a box
 
-To be written when the box is chosen. `deploy/install.sh` and the `Justfile` are the starting point.
+See [deploy.md](deploy.md).

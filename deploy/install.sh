@@ -19,6 +19,7 @@ fi
 id smith >/dev/null 2>&1 || useradd --create-home --shell /bin/bash smith
 
 sudo -u smith bash -c 'command -v ~/.bun/bin/bun >/dev/null || curl -fsSL https://bun.sh/install | bash'
+sudo -u smith bash -c 'command -v ~/.local/bin/claude >/dev/null || curl -fsSL https://claude.ai/install.sh | bash'
 sudo -u smith bash -c "[ -d ~/smith ] || git clone '$repo' ~/smith"
 sudo -u smith bash -c 'cd ~/smith && ~/.bun/bin/bun install --frozen-lockfile'
 
@@ -29,8 +30,8 @@ systemctl enable smith
 cat <<'EOF'
 
 Installed. Finish as the smith user (sudo -iu smith):
-  install Claude Code, then: claude auth login
+  claude auth login
   gh auth login
-  cp ~/smith/.env.example ~/smith/.env and fill it in
-Then: systemctl start smith && journalctl -fu smith
+  cp ~/smith/.env.example ~/smith/.env.local and fill it in
+Then, as root: systemctl start smith && journalctl -fu smith
 EOF
