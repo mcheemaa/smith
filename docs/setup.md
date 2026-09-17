@@ -72,6 +72,8 @@ Linear needs to reach the box over HTTPS, so do [deploy.md](deploy.md) first and
 
 `agent/.mcp.json` is copied into the workspace on first start and lists the services the agent can use. Each one reads its credential from `.env.local`; leave a value unset to leave that tool out.
 
+Claude Code asks for a one-time approval of a project's `.mcp.json` in interactive sessions. Agent sessions load the servers without asking, and `deploy/install.sh` sets `enableAllProjectMcpServers` in the smith user's `~/.claude/settings.json` so `claude mcp list` on the box reports their real status. Set it yourself on a machine you prepared by hand.
+
 - **Browser**: Playwright with headless Chromium, installed by `deploy/install.sh`. Nothing to configure.
 - **Notion**: create an internal integration at notion.so/profile/integrations, copy its token to `NOTION_TOKEN`, then share the pages and databases it may use with the integration (page menu, Connections).
 - **Postgres, read only**: create a read-only role and put its connection string in `DATABASE_URL_READONLY`. `agent/dbhub.toml` also sets the tool to read-only, so writes are refused twice.
