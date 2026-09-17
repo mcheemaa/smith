@@ -26,7 +26,13 @@ export type SlackTarget = {
 
 export type LinearTarget = { surface: "linear"; sessionId: string };
 
-export type HeartbeatTarget = { surface: "heartbeat"; channel?: string; threadTs?: string; userId?: string };
+export type HeartbeatTarget = {
+	surface: "heartbeat";
+	channel?: string;
+	threadTs?: string;
+	teamId?: string;
+	userId?: string;
+};
 
 // Everything needed to rebuild a reply after a restart, so it has to stay plain data.
 export type ReplyTarget = SlackTarget | LinearTarget | HeartbeatTarget;

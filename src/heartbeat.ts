@@ -25,7 +25,17 @@ export function startHeartbeat(deps: { config: Config; runner: Runner; slack: We
 				channel,
 				markdown_text: `Heartbeat, ${new Date().toUTCString()}`,
 			});
-			if (root.ts) target = { surface: "heartbeat", channel, threadTs: root.ts, ...(owner ? { userId: owner } : {}) };
+			// Slack streams into a channel only when told which workspace and person receive them.
+			const { team_id: teamId } = await deps.slack.auth.test();
+			if (root.ts) {
+				target = {
+					surface: "heartbeat",
+					channel,
+					threadTs: root.ts,
+					...(teamId ? { teamId } : {}),
+					...(owner ? { userId: owner } : {}),
+				};
+			}
 		}
 		await deps.runner.handle({
 			key: "heartbeat",
