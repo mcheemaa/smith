@@ -43,7 +43,7 @@ If you change the scopes in the manifest later, Slack asks you to reinstall the 
 
 ## 6. Your Slack member ID
 
-In Slack, open your profile, click the three dots, **Copy member ID**. It is `SLACK_ALLOWED_USERS` in `.env.local`. Only the people listed there can talk to Smith; leave it empty to allow the whole workspace.
+In Slack, open your profile, click the three dots, **Copy member ID**. It is `SLACK_ALLOWED_USERS` in `.env.local`: the people who may give the agent work, comma-separated. Leave it empty to allow everyone in the workspace. `SLACK_OWNER` is the person the heartbeat reports to; it defaults to the first allowed user, so set it when the list is empty.
 
 ## 7. Configure and run
 

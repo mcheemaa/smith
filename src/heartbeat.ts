@@ -10,7 +10,7 @@ import type { HeartbeatTarget } from "./types.ts";
 export function startHeartbeat(deps: { config: Config; runner: Runner; slack: WebClient }): Cron | undefined {
 	const { config } = deps;
 	if (!config.HEARTBEAT_CRON) return undefined;
-	const owner = config.SLACK_ALLOWED_USERS[0];
+	const owner = config.SLACK_OWNER ?? config.SLACK_ALLOWED_USERS[0];
 	const options = {
 		name: "heartbeat",
 		protect: true,

@@ -26,6 +26,7 @@ const schema = z.object({
 	SLACK_BOT_TOKEN: z.string().startsWith("xoxb-"),
 	SLACK_APP_TOKEN: z.string().startsWith("xapp-"),
 	SLACK_ALLOWED_USERS: list,
+	SLACK_OWNER: z.string().optional(),
 	SLACK_HEARTBEAT_CHANNEL: z.string().optional(),
 	HEARTBEAT_CRON: z.string().default("0 */4 * * *"),
 	LINEAR_CLIENT_ID: z.string().optional(),
