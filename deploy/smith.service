@@ -1,0 +1,17 @@
+[Unit]
+Description=Smith
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=smith
+WorkingDirectory=/home/smith/smith
+ExecStart=/home/smith/.bun/bin/bun run src/main.ts
+Environment=PATH=/home/smith/.bun/bin:/home/smith/.local/bin:/usr/local/bin:/usr/bin:/bin
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

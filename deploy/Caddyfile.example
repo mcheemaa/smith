@@ -1,0 +1,4 @@
+# Exposes the Linear webhook over HTTPS. Point a DNS record at the box and replace the hostname.
+smith.example.com {
+	reverse_proxy localhost:8787
+}
