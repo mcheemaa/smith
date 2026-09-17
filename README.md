@@ -61,11 +61,9 @@ the pull request linked when there is one.
 
 The TypeScript is plumbing, about a thousand lines: route a message to a session,
 stream the run back, remember which thread is which session, write every run down.
-The agent's behavior is `agent/CLAUDE.md` and `agent/heartbeat.md`, copied onto the
-machine on first start and owned by the agent and you after that. There is no
-guardrail layer and no approval flow; the agent runs with permissions bypassed on a
-machine that is its own, and what it should and should not do is written in its
-manual in plain English.
+How the agent works is `agent/CLAUDE.md` and `agent/heartbeat.md`, copied onto the
+machine on first start and yours to edit after that. The agent runs with full
+permissions on its own machine.
 
 ## Run it
 
