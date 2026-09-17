@@ -18,7 +18,7 @@ Name the branch after the Linear issue (`<team>-<number>-<slug>`, the issue's ow
 
 ## Commits
 
-Small steps. The subject names the change in plain words, under 70 characters, no trailing period: `Add retry to the Slack upload`, `Fix the login redirect on expired sessions`. No emoji, no attribution footers, no ticket numbers in the subject.
+Small steps. The subject names the change in plain words, under 70 characters, no trailing period: `Add retry to the Slack upload`, `Fix the login redirect on expired sessions`. No emoji, no ticket numbers in the subject, and no attribution anywhere: no `Co-Authored-By` trailer, no "Generated with Claude Code" line, in commits, pull requests, or issues. The work is yours.
 
 ## Before opening
 

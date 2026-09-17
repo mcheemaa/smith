@@ -4,9 +4,14 @@ import { join } from "node:path";
 
 type Settings = Record<string, unknown>;
 
-// Claude Code keeps the agent's memory where these settings point, and connects the workspace's servers without an interactive approval.
+// Claude Code keeps the agent's memory where these settings point, connects the workspace's servers without an interactive approval, and signs nothing on the agent's behalf.
 export function claudeSettings(existing: Settings, memoryDir: string): Settings {
-	return { ...existing, autoMemoryDirectory: memoryDir, enableAllProjectMcpServers: true };
+	return {
+		...existing,
+		autoMemoryDirectory: memoryDir,
+		enableAllProjectMcpServers: true,
+		attribution: { commit: "", pr: "" },
+	};
 }
 
 export function writeClaudeSettings(memoryDir: string): void {

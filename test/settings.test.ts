@@ -6,5 +6,6 @@ test("keeps the user's own settings and adds the two Smith needs", () => {
 		theme: "dark",
 		autoMemoryDirectory: "/home/smith/.smith/memory",
 		enableAllProjectMcpServers: true,
+		attribution: { commit: "", pr: "" },
 	});
 });
