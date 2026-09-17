@@ -12,7 +12,7 @@ A self-hosted engineering agent on the Claude Agent SDK. One owner per install, 
 - Small and legible. Every file has one concern and stays under a screen or two. If you cannot explain a file to the owner in a minute, it is too big.
 - Comments only where a why deserves one. Code that needs narration is not finished.
 - Nothing is done until verified: `bun run typecheck`, `bun run lint`, and `bun test` clean, and the real flow exercised.
-- No secrets in the repository. `.env` is gitignored; `.env.example` lists names only.
+- No secrets in the repository. `.env.local` is gitignored; `.env.example` lists names only.
 
 ## Code standards
 
