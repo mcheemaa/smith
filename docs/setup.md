@@ -25,7 +25,7 @@ A running log of the exact steps, written while doing them. Screenshots to be ad
 ## 3. Icon and colors
 
 1. On **Basic Information**, scroll to **Display Information**.
-2. Upload `assets/smith.png` as the app icon. Set the background color to `#F6F5F2`.
+2. Upload `assets/smith.png` as the app icon. Set the background color to `#1c1b19`; Slack requires a dark one so the white app name is readable.
 3. Click **Save Changes**. [screenshot: display information]
 
 ## 4. Install the app to the workspace
