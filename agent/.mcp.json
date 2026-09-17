@@ -25,9 +25,8 @@
         "@bytebase/dbhub",
         "--transport",
         "stdio",
-        "--readonly",
-        "--dsn",
-        "${DATABASE_URL_READONLY}"
+        "--config",
+        "dbhub.toml"
       ]
     },
     "trigger": {

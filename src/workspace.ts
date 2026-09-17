@@ -13,7 +13,7 @@ function seed(from: string, to: string): void {
 	if (!existsSync(to)) copyFileSync(from, to);
 }
 
-// Each skill folder is seeded the same way, so new skills arrive and edited ones are kept.
+// Each entry in a folder is seeded the same way, so new skills or notes arrive and edited ones are kept.
 function seedSkills(from: string, to: string): void {
 	if (!existsSync(from)) return;
 	mkdirSync(to, { recursive: true });
@@ -28,8 +28,10 @@ export async function prepareWorkspace(config: Config, agentDir: string): Promis
 	mkdirSync(runs, { recursive: true });
 	seed(join(agentDir, "CLAUDE.md"), join(workspace, "CLAUDE.md"));
 	seed(join(agentDir, ".mcp.json"), join(workspace, ".mcp.json"));
+	seed(join(agentDir, "dbhub.toml"), join(workspace, "dbhub.toml"));
 	seed(join(agentDir, "heartbeat.md"), join(config.SMITH_HOME, "heartbeat.md"));
 	seedSkills(join(agentDir, "skills"), join(workspace, ".claude", "skills"));
+	seedSkills(join(agentDir, "notes"), join(workspace, "notes"));
 	for (const url of config.SMITH_REPOS) {
 		const dir = join(workspace, repoName(url));
 		if (existsSync(dir)) continue;

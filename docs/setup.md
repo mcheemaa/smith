@@ -74,11 +74,11 @@ Linear needs to reach the box over HTTPS, so do [deploy.md](deploy.md) first and
 
 - **Browser**: Playwright with headless Chromium, installed by `deploy/install.sh`. Nothing to configure.
 - **Notion**: create an internal integration at notion.so/profile/integrations, copy its token to `NOTION_TOKEN`, then share the pages and databases it may use with the integration (page menu, Connections).
-- **Postgres, read only**: create a read-only role and put its connection string in `DATABASE_URL_READONLY`. The server refuses writes as well.
+- **Postgres, read only**: create a read-only role and put its connection string in `DATABASE_URL_READONLY`. `agent/dbhub.toml` also sets the tool to read-only, so writes are refused twice.
 - **Email**: a Resend API key in `RESEND_API_KEY` and the sender in `RESEND_FROM`. The `email` skill tells the agent how.
 - **Trigger.dev**: a personal access token in `TRIGGER_ACCESS_TOKEN`, from the Trigger.dev dashboard under account settings.
 
-Skills under `agent/skills` are copied to the workspace's `.claude/skills` the same way. Add a folder with a `SKILL.md` and it arrives on the next start.
+Skills under `agent/skills` are copied to the workspace's `.claude/skills` the same way, and notes under `agent/notes` to the workspace's `notes`. Add a file and it arrives on the next start; files already on the box are never overwritten.
 
 ## 10. Deploy to a box
 
