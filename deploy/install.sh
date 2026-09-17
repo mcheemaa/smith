@@ -27,7 +27,8 @@ sudo -u smith bash -c 'command -v ~/.bun/bin/bun >/dev/null || curl -fsSL https:
 sudo -u smith bash -c 'command -v ~/.local/bin/claude >/dev/null || curl -fsSL https://claude.ai/install.sh | bash'
 npm i -g vercel >/dev/null 2>&1
 npx -y playwright@latest install-deps chromium >/dev/null 2>&1
-sudo -u smith bash -c 'npx -y playwright@latest install chromium >/dev/null 2>&1'
+# The browser build must match the Playwright server pinned in agent/.mcp.json; bump both together.
+sudo -u smith bash -c 'npx -y @playwright/mcp@0.0.81 install-browser chrome-for-testing >/dev/null 2>&1'
 sudo -u smith bash -c "[ -d ~/smith ] || git clone '$repo' ~/smith"
 sudo -u smith bash -c 'cd ~/smith && ~/.bun/bin/bun install --frozen-lockfile'
 
