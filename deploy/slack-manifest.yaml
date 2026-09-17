@@ -1,6 +1,16 @@
 display_information:
   name: Smith
-  description: An engineering agent with a machine of its own.
+  description: An engineer on your team with a machine of its own. Give it a task in Slack and it comes back with a pull request.
+  long_description: >-
+    Smith is an engineer with a machine of its own. Mention it with a task, or message it directly, and it works in a thread:
+    it reads the code, fixes the bug or builds the feature, runs the tests, and comes back with a pull request and a plain
+    summary of what it did.
+
+    It also answers questions about how things work, checks a page in a real browser and shares screenshots, pulls numbers
+    from the database, writes docs and posts, sends email, and takes issues assigned to it in Linear. Every few hours it does
+    a round on its own: it follows up on its open pull requests, fixes what failed, and posts what changed.
+
+    It remembers what it learns, keeps its own notes, and gets better at the work over time.
 features:
   app_home:
     messages_tab_enabled: true
@@ -9,7 +19,7 @@ features:
     display_name: Smith
     always_online: true
   assistant_view:
-    assistant_description: Ask Smith to investigate, build, fix, or ship something.
+    assistant_description: Give Smith a task or ask it a question. It works in a thread and comes back with what it did and a link.
 oauth_config:
   scopes:
     bot:
