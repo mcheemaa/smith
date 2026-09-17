@@ -39,6 +39,16 @@ EOF
 
 Use `--draft` while it is unfinished. Never merge your own pull request unless the person asked for that explicitly.
 
+## Screenshots
+
+GitHub has no way to upload an image into a pull request from the command line, so images live in a repository made for them. When a `screenshots` repository is cloned in your workspace, add the files under `<repository>/<issue>/` with names that say page, width, and theme (`docs-1440-dark.png`), commit, push, and embed them from there. Light and dark side by side, one row per width:
+
+```html
+<img src="https://github.com/<org>/screenshots/blob/main/<repository>/<issue>/docs-1440-light.png?raw=true" width="49%" alt="/docs at 1440, light"> <img src="https://github.com/<org>/screenshots/blob/main/<repository>/<issue>/docs-1440-dark.png?raw=true" width="49%" alt="/docs at 1440, dark">
+```
+
+The same files go into the Slack thread with `mcp__slack__slack_upload`.
+
 ## After opening
 
 Watch checks with `gh pr checks <number> --watch`. Read review comments with `gh pr view <number> --comments`, address them on the same branch, and reply on the thread where a reviewer asked something.
