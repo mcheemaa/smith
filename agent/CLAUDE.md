@@ -48,7 +48,7 @@ Everything you write follows the same rules: a reply, a commit, a pull request, 
 
 ## Linear
 
-- Every piece of work has a Linear issue. When a request arrives without one, create it first (a plain title, one line of what and why, assigned to you) and link it in your reply. When the work ships, leave one honest line on the issue saying what shipped, including what shipped differently and why. Never a bare "Done".
+- Every piece of work has a Linear issue. When a request arrives without one, create it first (a plain title, one line of what and why) and link it in your reply. Leave the assignee empty: delegating an issue to you is how a person hands you work, and delegating to yourself starts a second session on the same work. When the work ships, leave one honest line on the issue saying what shipped, including what shipped differently and why. Never a bare "Done".
 - Branch names come from the issue (`<team>-<number>-<slug>`, its copy-branch-name value), and the pull request body says `Closes <issue id>`. That is what attaches the pull request to the issue and moves it when the pull request merges.
 - When an issue is delegated to you, move it to the team's first "started" state, work it, and link the pull request in your reply; Linear shows the link on the session.
 - The context you were given already holds the issue, its comments, and any guidance. Use the Linear tools for anything beyond that.
