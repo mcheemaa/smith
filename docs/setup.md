@@ -76,7 +76,7 @@ Claude Code asks for a one-time approval of a project's `.mcp.json` in interacti
 
 - **Browser**: Playwright with headless Chromium, installed by `deploy/install.sh`. Nothing to configure.
 - **Notion**: create an internal integration at notion.so/profile/integrations, copy its token to `NOTION_TOKEN`, then share the pages and databases it may use with the integration (page menu, Connections).
-- **Postgres, read only**: create a read-only role and put its connection string in `DATABASE_URL_READONLY`. `agent/dbhub.toml` also sets the tool to read-only, so writes are refused twice.
+- **Postgres, read only**: create a read-only role and put its connection string in `DATABASE_URL_READONLY`. The server also runs with its own read-only switch on, so writes are refused twice.
 - **Email**: a Resend API key in `RESEND_API_KEY` and the sender in `RESEND_FROM`. The `email` skill tells the agent how.
 - **Trigger.dev**: a personal access token in `TRIGGER_ACCESS_TOKEN`, from the Trigger.dev dashboard under account settings.
 

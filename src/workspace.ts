@@ -28,7 +28,6 @@ export async function prepareWorkspace(config: Config, agentDir: string): Promis
 	mkdirSync(runs, { recursive: true });
 	seed(join(agentDir, "CLAUDE.md"), join(workspace, "CLAUDE.md"));
 	seed(join(agentDir, ".mcp.json"), join(workspace, ".mcp.json"));
-	seed(join(agentDir, "dbhub.toml"), join(workspace, "dbhub.toml"));
 	seed(join(agentDir, "heartbeat.md"), join(config.SMITH_HOME, "heartbeat.md"));
 	seedSkills(join(agentDir, "skills"), join(workspace, ".claude", "skills"));
 	seedSkills(join(agentDir, "notes"), join(workspace, "notes"));

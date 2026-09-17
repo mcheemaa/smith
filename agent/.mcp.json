@@ -24,10 +24,12 @@
         "-y",
         "@bytebase/dbhub",
         "--transport",
-        "stdio",
-        "--config",
-        "dbhub.toml"
-      ]
+        "stdio"
+      ],
+      "env": {
+        "DSN": "${DATABASE_URL_READONLY}",
+        "READONLY": "true"
+      }
     },
     "trigger": {
       "command": "npx",

@@ -1,9 +1,0 @@
-# Read-only database access for the agent. DBHub resolves the environment variable when it loads this file.
-[[sources]]
-id = "main"
-dsn = "${DATABASE_URL_READONLY}"
-
-[[tools]]
-name = "execute_sql"
-source = "main"
-readonly = true

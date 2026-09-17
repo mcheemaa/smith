@@ -1,6 +1,5 @@
 import { describeError, log } from "../log.ts";
 import type { Runner } from "../runner.ts";
-import { LinearReply } from "./reply.ts";
 import type { LinearAuth } from "./token.ts";
 import type { AgentSessionEvent } from "./webhook.ts";
 
