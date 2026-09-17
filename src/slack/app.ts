@@ -36,7 +36,7 @@ function describe(inbound: Inbound): string {
 	const { channel, threadTs } = inbound.target;
 	return [
 		`You are replying in ${where} (channel ${channel}, thread ${threadTs}) to <@${inbound.user}>. Keep replies short and specific; people read them on their phones.`,
-		"You are also the Slack bot itself: the slack tool calls any Web API method as you, and slack_upload shares files from your workspace.",
+		"You are also the Slack bot itself: the mcp__slack__slack tool calls any Web API method as you, and mcp__slack__slack_upload shares files from your workspace.",
 	].join(" ");
 }
 

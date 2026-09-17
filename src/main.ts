@@ -1,5 +1,4 @@
 import { join } from "node:path";
-import { slackTools } from "./agent/tools.ts";
 import { type Config, loadConfig, paths } from "./config.ts";
 import { startHeartbeat } from "./heartbeat.ts";
 import { handleLinearEvent } from "./linear/session.ts";
@@ -46,7 +45,12 @@ const runner = new Runner({
 	workspace,
 	runsDir: paths(config).runs,
 	mcpServers: async () => ({
-		slack: slackTools(slack.client),
+		slack: {
+			type: "stdio",
+			command: process.execPath,
+			args: [join(import.meta.dir, "slack", "mcp.ts")],
+			env: { SLACK_BOT_TOKEN: config.SLACK_BOT_TOKEN },
+		},
 		...(linear
 			? {
 					linear: {
