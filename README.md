@@ -33,11 +33,11 @@ markdown file it is allowed to edit.
   </picture>
 </p>
 
-## The shape
+## How it works
 
 The session is the unit. A Slack thread is a session, a direct message is one long
 session, a Linear agent session is a session, and the heartbeat has one of its own.
-Three things write into them: people, Linear, and the agent's own clock. Runs on
+Three things write into them: people, Linear, and the heartbeat timer. Runs on
 one session are serialized; a few sessions run at once. Sessions are Claude Code
 transcripts on the machine's disk, so a restart, a deploy, or a week of silence
 loses nothing, and a run cut off by a restart resumes on the next boot.
@@ -54,14 +54,14 @@ the pull request linked when there is one.
 | direct messages and `@Smith` mentions, over Socket Mode, no public URL needed | assign or mention the agent and Linear sends the session; it answers within seconds |
 | a mention inside an existing thread reads the thread first | follow-ups in the same session resume the same conversation |
 | attached files are saved into the workspace for the agent to open | the pull request it opens is attached to the session |
-| it is the bot user: any Web API method, and file uploads, as itself | the full Linear MCP, as the agent's own identity |
+| it is the bot user: any Slack Web API method, and file uploads, as itself | the Linear MCP server, as the agent's own Linear identity |
 | only the people you list can talk to it | `stop` in Linear aborts the run |
 
 ## The harness underneath
 
 The TypeScript is plumbing, about a thousand lines: route a message to a session,
 stream the run back, remember which thread is which session, write every run down.
-The agent's behavior is `agent/CLAUDE.md` and `agent/heartbeat.md`, seeded onto the
+The agent's behavior is `agent/CLAUDE.md` and `agent/heartbeat.md`, copied onto the
 machine on first start and owned by the agent and you after that. There is no
 guardrail layer and no approval flow; the agent runs with permissions bypassed on a
 machine that is its own, and what it should and should not do is written in its
@@ -71,7 +71,7 @@ manual in plain English.
 
 You need a machine with Bun, git, gh, and Claude Code, signed in to GitHub and to
 your Claude account, and a Slack app made from `deploy/slack-manifest.yaml`.
-[docs/setup.md](docs/setup.md) walks every step.
+[docs/setup.md](docs/setup.md) covers every step.
 
 ```console
 bun install
@@ -79,7 +79,7 @@ cp .env.example .env.local        # fill in
 bun start
 ```
 
-Open Smith under Apps in Slack and say hello. The gates are
+Open Smith under Apps in Slack and say hello. The checks are
 `bun run typecheck && bun run lint && bun test`.
 
 ## Deploying

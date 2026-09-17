@@ -8,7 +8,7 @@ export function repoName(url: string): string {
 	return basename(url.replace(/\/+$/, "")).replace(/\.git$/, "");
 }
 
-// Seeded once from the repo; after that the copy on the box belongs to the agent and its owner.
+// Copied once from the repo; after that the copy on the box belongs to the agent and its owner.
 function seed(from: string, to: string): void {
 	if (!existsSync(to)) copyFileSync(from, to);
 }

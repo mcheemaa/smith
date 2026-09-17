@@ -18,7 +18,7 @@ Thanks for wanting to make Smith better. It is a young, deliberately small proje
 
 ## Before you open a PR
 
-Run the gates; CI runs exactly these and nothing else:
+Run the checks; CI runs exactly these and nothing else:
 
 ```console
 bun run typecheck && bun run lint && bun test

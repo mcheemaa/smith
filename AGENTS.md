@@ -19,7 +19,7 @@ A self-hosted engineering agent on the Claude Agent SDK. One owner per install, 
 - TypeScript strict, no `any`, no suppressions. Biome formats and lints.
 - Verify library behavior against the installed package in `node_modules`, not memory.
 - Prefer the platform: `bun:sqlite`, `Bun.file`, `Bun.serve`, `Bun.$`.
-- Keep the Reply interface the only seam between a surface (Slack, Linear, heartbeat) and the agent runtime.
+- The Reply interface is the only boundary between a surface (Slack, Linear, heartbeat) and the agent runtime.
 
 ## Voice
 
