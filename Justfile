@@ -1,10 +1,9 @@
 host := env("SMITH_HOST", "")
 remote := "/home/smith/smith"
 
-# Sync this checkout to the box, install dependencies, restart the service.
+# Pull main on the box, install dependencies, restart the service.
 deploy target=host:
-    rsync -az --delete --rsync-path="sudo rsync" --chown=smith:smith --exclude node_modules --exclude .git --exclude local --exclude .env.local ./ {{target}}:{{remote}}/
-    ssh {{target}} 'cd {{remote}} && sudo -u smith /home/smith/.bun/bin/bun install --frozen-lockfile && sudo systemctl restart smith'
+    ssh {{target}} 'cd {{remote}} && sudo -u smith git pull --ff-only && sudo -u smith /home/smith/.bun/bin/bun install --frozen-lockfile && sudo systemctl restart smith'
 
 # Copy the local .env.local to the box.
 env target=host:

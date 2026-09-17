@@ -58,7 +58,7 @@ From a checkout on your laptop:
 just deploy root@$HOST
 ```
 
-This syncs the repository to the box, installs dependencies, and restarts the service. Runs that were in progress resume on the next boot.
+This pulls `main` on the box, installs dependencies, and restarts the service, so commit and push first. Runs that were in progress resume on the next boot.
 
 ## Linear webhook
 
