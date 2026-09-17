@@ -21,6 +21,7 @@ export type SlackTarget = {
 	teamId?: string;
 	userId?: string;
 	originTs?: string;
+	assistant?: boolean;
 };
 
 export type LinearTarget = { surface: "linear"; sessionId: string };

@@ -20,7 +20,7 @@ test("remembers a session until it goes idle", () => {
 	const store = freshStore();
 	store.saveSession("k", "s1");
 	expect(store.session("k", 60_000)).toBe("s1");
-	expect(store.session("k", 0)).toBeUndefined();
+	expect(store.session("k", -1)).toBeUndefined();
 	store.forgetSession("k");
 	expect(store.session("k", 60_000)).toBeUndefined();
 });

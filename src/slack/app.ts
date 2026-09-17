@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import { App, Assistant, LogLevel } from "@slack/bolt";
 import type { Config } from "../config.ts";
-import { log } from "../log.ts";
+import { describeError, log } from "../log.ts";
 import type { Job, SlackTarget } from "../types.ts";
 import { saveAttachments, threadHistory, withContext } from "./context.ts";
 
@@ -31,7 +31,11 @@ export function sessionKey(channel: string, threadTs: string, inChannel: boolean
 
 function describe(inbound: Inbound): string {
 	const where = inbound.inChannel ? "a Slack channel thread" : "a Slack direct message";
-	return `You are replying in ${where} to <@${inbound.user}>. Keep replies short and specific; people read them on their phones.`;
+	const { channel, threadTs } = inbound.target;
+	return [
+		`You are replying in ${where} (channel ${channel}, thread ${threadTs}) to <@${inbound.user}>. Keep replies short and specific; people read them on their phones.`,
+		"You are also the Slack bot itself: the slack tool calls any Web API method as you, and slack_upload shares files from your workspace.",
+	].join(" ");
 }
 
 export function createSlackApp(deps: Deps): App {
@@ -73,12 +77,13 @@ export function createSlackApp(deps: Deps): App {
 			: [];
 		const prompt = withContext(inbound.text, history, attachments);
 		if (!prompt.trim()) return;
-		await deps.handle({
+		const job: Job = {
 			key,
 			prompt,
 			context: { surface: "slack", description: describe(inbound) },
 			target: inbound.target,
-		});
+		};
+		deps.handle(job).catch((error) => log.error("slack.dispatch_failed", { key, error: describeError(error) }));
 	};
 
 	app.event("app_mention", async ({ event, context }) => {
@@ -148,6 +153,7 @@ export function createSlackApp(deps: Deps): App {
 						originTs: message.ts,
 						...(context.teamId ? { teamId: context.teamId } : {}),
 						userId: message.user,
+						assistant: true,
 					},
 				});
 			},

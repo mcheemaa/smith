@@ -12,14 +12,29 @@ oauth_config:
     bot:
       - app_mentions:read
       - assistant:write
+      - bookmarks:write
+      - canvases:read
+      - canvases:write
       - channels:history
+      - channels:join
+      - channels:read
       - chat:write
+      - chat:write.public
       - files:read
+      - files:write
       - groups:history
+      - groups:read
       - im:history
       - im:read
       - im:write
+      - mpim:history
+      - mpim:read
+      - mpim:write
+      - pins:write
+      - reactions:read
       - reactions:write
+      - users:read
+      - users:read.email
 settings:
   event_subscriptions:
     bot_events:

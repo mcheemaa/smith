@@ -1,5 +1,6 @@
 import { join } from "node:path";
 import { LinearClient } from "@linear/sdk";
+import { slackTools } from "./agent/tools.ts";
 import { type Config, loadConfig, paths } from "./config.ts";
 import { startHeartbeat } from "./heartbeat.ts";
 import { handleLinearEvent } from "./linear/session.ts";
@@ -39,15 +40,18 @@ const runner = new Runner({
 	queue: new RunQueue(config.SMITH_MAX_CONCURRENT),
 	workspace,
 	runsDir: paths(config).runs,
-	mcpServers: linearToken
-		? {
-				linear: {
-					type: "http",
-					url: "https://mcp.linear.app/mcp",
-					headers: { Authorization: `Bearer ${linearToken}` },
-				},
-			}
-		: {},
+	mcpServers: {
+		slack: slackTools(slack.client),
+		...(linearToken
+			? {
+					linear: {
+						type: "http",
+						url: "https://mcp.linear.app/mcp",
+						headers: { Authorization: `Bearer ${linearToken}` },
+					},
+				}
+			: {}),
+	},
 	replyFor: replyFactory({ slack: slack.client, ...(linear ? { linear } : {}) }),
 });
 

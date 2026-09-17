@@ -76,6 +76,20 @@ export class SlackReply implements Reply {
 			log.error("slack.finish_failed", { error: describeError(error) });
 		}
 		await this.react("remove", "eyes");
+		if (this.target.assistant) await this.clearStatus();
+	}
+
+	// The assistant "is on it" indicator only goes away when told to; unattended it would linger for an hour.
+	private async clearStatus(): Promise<void> {
+		try {
+			await this.client.assistant.threads.setStatus({
+				channel_id: this.target.channel,
+				thread_ts: this.target.threadTs,
+				status: "",
+			});
+		} catch (error) {
+			log.warn("slack.status_clear_failed", { error: describeError(error) });
+		}
 	}
 
 	private post(markdown: string) {
