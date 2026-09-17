@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync } from "node:fs";
+import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync } from "node:fs";
 import { basename, join } from "node:path";
 import { $ } from "bun";
 import { type Config, paths } from "./config.ts";
@@ -13,12 +13,23 @@ function seed(from: string, to: string): void {
 	if (!existsSync(to)) copyFileSync(from, to);
 }
 
+// Each skill folder is seeded the same way, so new skills arrive and edited ones are kept.
+function seedSkills(from: string, to: string): void {
+	if (!existsSync(from)) return;
+	mkdirSync(to, { recursive: true });
+	for (const name of readdirSync(from)) {
+		if (!existsSync(join(to, name))) cpSync(join(from, name), join(to, name), { recursive: true });
+	}
+}
+
 export async function prepareWorkspace(config: Config, agentDir: string): Promise<string> {
 	const { workspace, runs } = paths(config);
 	mkdirSync(workspace, { recursive: true });
 	mkdirSync(runs, { recursive: true });
 	seed(join(agentDir, "CLAUDE.md"), join(workspace, "CLAUDE.md"));
+	seed(join(agentDir, ".mcp.json"), join(workspace, ".mcp.json"));
 	seed(join(agentDir, "heartbeat.md"), join(config.SMITH_HOME, "heartbeat.md"));
+	seedSkills(join(agentDir, "skills"), join(workspace, ".claude", "skills"));
 	for (const url of config.SMITH_REPOS) {
 		const dir = join(workspace, repoName(url));
 		if (existsSync(dir)) continue;

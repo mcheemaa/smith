@@ -68,6 +68,18 @@ Linear needs to reach the box over HTTPS, so do [deploy.md](deploy.md) first and
 6. Put `LINEAR_CLIENT_ID`, `LINEAR_CLIENT_SECRET`, and `LINEAR_WEBHOOK_SECRET` in `.env.local`, copy it to the box with `just env`, and restart the service. The log prints `linear.token` and `linear.listening`. Tokens expire after 30 days and Smith mints new ones itself.
 7. In Linear, assign an issue to the agent or mention it in a comment. The session appears on the issue within seconds.
 
-## 9. Deploy to a box
+## 9. Give it tools
+
+`agent/.mcp.json` is copied into the workspace on first start and lists the services the agent can use. Each one reads its credential from `.env.local`; leave a value unset to leave that tool out.
+
+- **Browser**: Playwright with headless Chromium, installed by `deploy/install.sh`. Nothing to configure.
+- **Notion**: create an internal integration at notion.so/profile/integrations, copy its token to `NOTION_TOKEN`, then share the pages and databases it may use with the integration (page menu, Connections).
+- **Postgres, read only**: create a read-only role and put its connection string in `DATABASE_URL_READONLY`. The server refuses writes as well.
+- **Email**: a Resend API key in `RESEND_API_KEY` and the sender in `RESEND_FROM`. The `email` skill tells the agent how.
+- **Trigger.dev**: a personal access token in `TRIGGER_ACCESS_TOKEN`, from the Trigger.dev dashboard under account settings.
+
+Skills under `agent/skills` are copied to the workspace's `.claude/skills` the same way. Add a folder with a `SKILL.md` and it arrives on the next start.
+
+## 10. Deploy to a box
 
 See [deploy.md](deploy.md).
