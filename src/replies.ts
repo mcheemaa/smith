@@ -31,6 +31,7 @@ export function replyFactory(deps: { slack: WebClient; linear?: LinearAuth }) {
 					? new SlackReply(deps.slack, {
 							channel: target.channel,
 							threadTs: target.threadTs,
+							...(target.teamId ? { teamId: target.teamId } : {}),
 							...(target.userId ? { userId: target.userId } : {}),
 						})
 					: new LogReply();

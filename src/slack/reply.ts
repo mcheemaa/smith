@@ -144,6 +144,16 @@ export class SlackReply implements Reply {
 			this.streamingBroken = true;
 			this.pendingText = text;
 			log.warn("slack.stream_failed", { error: describeError(error) });
+			await this.closeStream();
+		}
+	}
+
+	// A stream left open keeps the thread saying the agent is working long after it stopped.
+	private async closeStream(): Promise<void> {
+		try {
+			await this.streamer?.stop();
+		} catch {
+			// Nothing to close when the stream never opened.
 		}
 	}
 }
