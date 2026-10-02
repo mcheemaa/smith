@@ -11,6 +11,7 @@ export type RunInput = {
 	mcpServers: Record<string, McpServerConfig>;
 	signal: AbortSignal;
 	config: Config;
+	effort: Config["SMITH_EFFORT"];
 	reply: Pick<Reply, "text" | "tool" | "toolDone">;
 	onMessage?: (message: SDKMessage) => void;
 };
@@ -24,7 +25,7 @@ export async function runAgent(input: RunInput): Promise<RunResult> {
 		cwd: input.cwd,
 		model: config.SMITH_MODEL,
 		fallbackModel: config.SMITH_FALLBACK_MODEL,
-		effort: config.SMITH_EFFORT,
+		effort: input.effort,
 		maxTurns: config.SMITH_MAX_TURNS,
 		abortController,
 		permissionMode: "bypassPermissions",

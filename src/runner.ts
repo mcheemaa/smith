@@ -112,6 +112,10 @@ export class Runner {
 			mcpServers: await this.deps.mcpServers(),
 			signal,
 			config,
+			effort:
+				job.context.surface === "heartbeat"
+					? (config.SMITH_HEARTBEAT_EFFORT ?? config.SMITH_EFFORT)
+					: config.SMITH_EFFORT,
 			reply,
 			onMessage: (message) => {
 				transcript.write(`${JSON.stringify(message)}\n`);

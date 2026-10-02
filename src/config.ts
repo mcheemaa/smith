@@ -12,13 +12,16 @@ const list = z
 			.filter(Boolean),
 	);
 
+const effort = z.enum(["low", "medium", "high", "xhigh", "max"]);
+
 const schema = z.object({
 	SMITH_NAME: z.string().default("Smith"),
 	SMITH_HOME: z.string().default(join(homedir(), ".smith")),
 	SMITH_REPOS: list,
 	SMITH_MODEL: z.string().default("claude-fable-5-1"),
 	SMITH_FALLBACK_MODEL: z.string().default("claude-opus-5"),
-	SMITH_EFFORT: z.enum(["low", "medium", "high", "xhigh", "max"]).default("high"),
+	SMITH_EFFORT: effort.default("high"),
+	SMITH_HEARTBEAT_EFFORT: effort.optional(),
 	SMITH_MAX_TURNS: z.coerce.number().int().positive().default(300),
 	SMITH_MAX_CONCURRENT: z.coerce.number().int().positive().default(4),
 	SMITH_RUN_TIMEOUT_MINUTES: z.coerce.number().positive().default(120),
