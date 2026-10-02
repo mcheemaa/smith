@@ -47,6 +47,11 @@ export function handleLinearEvent(event: AgentSessionEvent, deps: Deps): void {
 		return;
 	}
 	if (event.action === "created") {
+		// Delegating an issue to the agent itself must not start a second run on work already underway.
+		if (session.creatorId && session.creatorId === event.appUserId) {
+			log.info("linear.self_session_skipped", { sessionId: session.id });
+			return;
+		}
 		if (deps.hasSession(key)) return;
 		deps.auth
 			.client()

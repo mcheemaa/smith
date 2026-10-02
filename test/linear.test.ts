@@ -1,7 +1,9 @@
 import { expect, test } from "bun:test";
 import { endsWithQuestion, pullRequestUrls } from "../src/linear/reply.ts";
-import { sessionPrompt } from "../src/linear/session.ts";
+import { handleLinearEvent, sessionPrompt } from "../src/linear/session.ts";
 import type { AgentSessionEvent } from "../src/linear/webhook.ts";
+import type { LinearAuth } from "../src/linear/token.ts";
+import type { Runner } from "../src/runner.ts";
 
 function event(overrides: Record<string, unknown>): AgentSessionEvent {
 	return {
@@ -57,4 +59,46 @@ test("finds unique pull request links", () => {
 test("a reply that ends with a question is a question", () => {
 	expect(endsWithQuestion("Should I also migrate the users table?")).toBe(true);
 	expect(endsWithQuestion("Done. PR is up.\n")).toBe(false);
+});
+
+function recordingDeps() {
+	const calls: string[] = [];
+	const auth = { client: async () => ({ createAgentActivity: async () => ({}) }) } as unknown as LinearAuth;
+	const runner = {
+		handle: async (job: { key: string }) => {
+			calls.push(`handle:${job.key}`);
+		},
+		stop: (key: string) => {
+			calls.push(`stop:${key}`);
+		},
+	} as unknown as Runner;
+	return { deps: { auth, runner, hasSession: () => false }, calls };
+}
+
+test("a session the agent created itself is ignored", () => {
+	const { deps, calls } = recordingDeps();
+	const issue = { identifier: "ENG-9", title: "T", url: "u", description: "D" };
+	handleLinearEvent(
+		event({
+			webhookId: crypto.randomUUID(),
+			appUserId: "app-1",
+			agentSession: { id: "s-self", creatorId: "app-1", issue },
+		}),
+		deps,
+	);
+	expect(calls).toEqual([]);
+});
+
+test("a session a person created is worked", () => {
+	const { deps, calls } = recordingDeps();
+	const issue = { identifier: "ENG-9", title: "T", url: "u", description: "D" };
+	handleLinearEvent(
+		event({
+			webhookId: crypto.randomUUID(),
+			appUserId: "app-1",
+			agentSession: { id: "s-human", creatorId: "user-7", issue },
+		}),
+		deps,
+	);
+	expect(calls).toEqual(["handle:linear:s-human"]);
 });
