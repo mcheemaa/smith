@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test";
 import { endsWithQuestion, pullRequestUrls } from "../src/linear/reply.ts";
 import { handleLinearEvent, sessionPrompt } from "../src/linear/session.ts";
-import type { AgentSessionEvent } from "../src/linear/webhook.ts";
 import type { LinearAuth } from "../src/linear/token.ts";
+import type { AgentSessionEvent } from "../src/linear/webhook.ts";
 import type { Runner } from "../src/runner.ts";
 
 function event(overrides: Record<string, unknown>): AgentSessionEvent {
