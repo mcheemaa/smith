@@ -84,7 +84,7 @@ Claude Code asks for a one-time approval of a project's `.mcp.json` in interacti
 
 - **Vercel**: an access token in `VERCEL_TOKEN`, from vercel.com/account/settings/tokens, scoped to the team that owns the projects. The `vercel` skill covers the CLI, which `deploy/install.sh` installs.
 
-Skills under `agent/skills` are copied to the workspace's `.claude/skills` the same way. Add a file and it arrives on the next start; files already on the box are never overwritten.
+Skills under `agent/skills` are copied to the workspace's `.claude/skills` the same way. So are files under `agent/tools`, into the workspace's `tools`: helper scripts the agent builds for itself can ship with a private copy, and the linter leaves them to the agent. Add a file and it arrives on the next start; files already on the box are never overwritten.
 
 ### Memory
 

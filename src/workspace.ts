@@ -34,6 +34,7 @@ export async function prepareWorkspace(config: Config, agentDir: string): Promis
 	seed(join(agentDir, "heartbeat.md"), join(config.SMITH_HOME, "heartbeat.md"));
 	seedSkills(join(agentDir, "skills"), join(workspace, ".claude", "skills"));
 	seedSkills(join(agentDir, "memory"), memory);
+	seedSkills(join(agentDir, "tools"), join(workspace, "tools"));
 	for (const url of config.SMITH_REPOS) {
 		const dir = join(workspace, repoName(url));
 		if (existsSync(dir)) continue;
